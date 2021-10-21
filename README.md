@@ -9,7 +9,7 @@ Compilation prerequisites are zlib and (eventually) libpng.
 ## To-do
 
 - Tool improvements
- - Graphics conversion, from native `.grp`<->`.png`
+  - Graphics conversion, from native `.grp`<->`.png`
 - Game hacking
- - Support ASCII dialogue in scripts, possibly with variable-width fonts
- - Use on-disk audio files instead of CD-DA BGM
+  - Support ASCII dialogue in scripts, possibly with variable-width fonts
+  - Use on-disk audio files instead of CD-DA BGM
