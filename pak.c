@@ -8,6 +8,8 @@
 
 #include <zlib.h>
 
+#include "dgcf.h"
+
 
 /*
 
@@ -35,54 +37,7 @@ the game does not appear to work correctly if files in data.pak are compressed
 
 */
 
-#define isslash(c) ((c)=='/' || (c)=='\\')
-char *getfilename(char *fullname)
-{
-  char *result = fullname;
-  char *p = fullname;
-  
-  while (1)
-  {
-    char c = *p;
-    char n = *(p+1);
-    if (!c || !n) break;
-    
-    if (isslash(c) && !isslash(n))
-    {
-      result = p+1;
-    }
-    p++;
-  }
-  
-  /* remove trailing slashes */
-  if (isslash(*p))
-  {
-    while (isslash(*p) && p >= fullname) p--;
-    *(p+1) = 0;
-  }
-  
-  return result;
-}
 
-uint32_t get32(uint8_t *p) { return (*p) | (*(p+1) << 8) | (*(p+2) << 16) | (*(p+3) << 24); }
-
-void write32(uint8_t *p, uint32_t v)
-{
-  *p = v & 0xff;
-  *(p+1) = (v>>8) & 0xff;
-  *(p+2) = (v>>16) & 0xff;
-  *(p+3) = (v>>24) & 0xff;
-}
-
-int fput32(uint32_t v, FILE *f)
-{
-  for (int i = 0; i < 4; i++)
-  {
-    if (fputc(v & 0xff, f)==EOF) return EOF;
-    v >>= 8;
-  }
-  return 0;
-}
 
 
 
@@ -230,7 +185,6 @@ int unpack(char *pakname)
           UNP_FILE_FAIL();
         }
         
-#define ZBUF_SIZE 0x80000
         uint8_t outbuf[ZBUF_SIZE];
         while (zs.avail_in)
         {
@@ -506,17 +460,16 @@ int main(int argc, char *argv[])
   {
     return unpack(argv[1]);
   }
-  else if (argc == 3 || argc == 4)
+  else if (argc == 3)
   {
-    if (argc == 3)
-      return pack(argv[1], argv[2], 0);
-    else
-    {
-      int c = atoi(argv[3]);
-      return pack(argv[1], argv[2], c);
-    }
+    return pack(argv[1], argv[2], 0);
   }
-  else if (argc == 1)
+  else if (argc == 4)
+  {
+    int c = atoi(argv[3]);
+    return pack(argv[1], argv[2], c);
+  }
+  else
   {
     printf(
       "Di Gi Charat Fantasy (un)packer by karmic\n"

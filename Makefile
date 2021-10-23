@@ -7,10 +7,11 @@ endif
 
 CFLAGS := -s -Ofast -Wall
 
-LIBS := -lz -lpng
+LIBS := -lpng -lz
 
-SRCS := pak.c
+SRCS := pak.c grp.c
 OUTS := $(SRCS:.c=$(DOTEXE))
+DEPS := $(SRCS:.c=.d)
 
 
 .PHONY: default all clean
@@ -20,7 +21,15 @@ all: $(OUTS)
 
 
 clean:
-	rm $(OUTS)
+	-$(RM) $(OUTS) $(DEPS)
+
+
+
+%.d: %.c
+	$(CC) -M -MG -MT $(<:.c=$(DOTEXE)) -MF $@ $<
+
+-include $(DEPS)
+
 
 %$(DOTEXE): %.c
 	$(CC) $(CFLAGS) $< -o $@ $(LIBS)
