@@ -431,6 +431,7 @@ int pack(char *pakname, char *dn, int compmode)
     fput32(toc[f].csize, of);
     fput32(compmode, of);
   }
+  fclose(of);
   
   
   
