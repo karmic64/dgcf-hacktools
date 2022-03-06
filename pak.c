@@ -58,7 +58,17 @@ int unpack(char *pakname)
   
   printf("Reading %s...", pakname);
   uint8_t firstent[0x40];
-  fread(firstent, 1, 0x40, inf);
+  if (fread(firstent, 1, 0x40, inf) != 0x40)
+  {
+    printf("Error while reading header: %s\n",strerror(errno));
+    UNP_FAIL();
+  }
+  const uint8_t mpegsig[] = {0,0,1,0xba};
+  if (!memcmp(mpegsig,firstent,4))
+  {
+    puts("This file is an MPEG movie! You are probably attempting to unpack one of the files named \"data01.pak\"-\"data17.pak\". These files, despite their extension, are NOT archives.");
+    UNP_FAIL();
+  }
   if (memcmp("DATA$TOP", firstent, 8))
   {
     puts("Invalid archive signature");
@@ -75,13 +85,13 @@ int unpack(char *pakname)
   {
     int me = 0;
     int ce = 0;
-    if (mkdir(dirname)) me = errno;
+    if (dgcf_mkdir(dirname)) me = errno;
     if (chdir(dirname)) ce = errno;
     
     if (ce)
     {
       if (me) printf("Couldn't create output directory: %s\n", strerror(me));
-      else printf("Couldn't change to output directory: %s\n", strerror(ce));
+      if (ce) printf("Couldn't change to output directory: %s\n", strerror(ce));
       UNP_FAIL();
     }
   }
@@ -133,8 +143,9 @@ int unpack(char *pakname)
     }
     else
     {
-#define UNP_FILE_FAIL() { fclose(of); remove((char*)ent); errors++; goto unp_file_next; }
-      FILE *of = fopen((char*)ent, "wb");
+      void *outname = convertfilename(ent);
+#define UNP_FILE_FAIL() { fclose(of); dgcf_remove(outname); errors++; goto unp_file_next; }
+      FILE *of = dgcf_fopen_w(outname);
       if (!of)
       {
         printf("Couldn't open for writing: %s\n", strerror(errno));
@@ -240,7 +251,7 @@ unp_file_next:
 
 
 
-#define PACK_FAIL() { puts("Packing failed."); chdir(initialcwd); fclose(of); remove(pakname); free(initialcwd); free(toc); return EXIT_FAILURE; }
+#define PACK_FAIL() { puts("Packing failed."); if (chdir(initialcwd)) {printf("Return to initial working directory failed: %s\n",strerror(errno));} fclose(of); remove(pakname); free(initialcwd); free(toc); return EXIT_FAILURE; }
 int pack(char *pakname, char *dn, int compmode)
 {
   if (compmode != 0 && compmode != 2)

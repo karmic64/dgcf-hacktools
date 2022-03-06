@@ -8,6 +8,10 @@ endif
 CFLAGS := -s -Ofast -Wall
 
 LIBS := -lpng -lz
+# iconv must be explicitly linked on windows/mingw
+ifdef COMSPEC
+LIBS := $(LIBS) -liconv
+endif
 
 SRCS := pak.c grp.c
 OUTS := $(SRCS:.c=$(DOTEXE))

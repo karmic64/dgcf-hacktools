@@ -6,6 +6,8 @@ Massively incomplete at the moment, please be patient.
 
 Compilation prerequisites are zlib and libpng.
 
+You also need to copy over the unmodified files from an installed game to a folder called `DFantasy` (SHA-1 checksums for the files are in `sha1sums.txt`).
+
 ## To-do
 
 - Tool improvements
