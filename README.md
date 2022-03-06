@@ -4,7 +4,9 @@ Data extraction/injection tools that could be used in a translation of the PC vi
 
 Massively incomplete at the moment, please be patient.
 
-Compilation prerequisites are zlib and libpng.
+Tool compilation prerequisites are zlib and libpng.
+
+You need the [flat assembler](https://flatassembler.net/) to assemble the patched game executable.
 
 You also need to copy over the unmodified files from an installed game to a folder called `DFantasy` (SHA-1 checksums for the files are in `sha1sums.txt`).
 
