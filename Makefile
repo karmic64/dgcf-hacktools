@@ -5,6 +5,9 @@ DOTEXE:=
 endif
 
 
+SRC_EXE := DFantasy/dfantasy.exe
+
+
 CFLAGS := -s -Ofast -Wall
 
 LIBS := -lpng -lz
@@ -28,7 +31,10 @@ clean:
 	-$(RM) $(OUTS) $(DEPS)
 
 
-dfantasy-en.exe: dfantasy-en.asm DFantasy/dfantasy.exe
+imports.inc: $(SRC_EXE) dump-imports$(DOTEXE)
+	./dump-imports$(DOTEXE) $< $@
+
+dfantasy-en.exe: dfantasy-en.asm $(SRC_EXE) imports.inc
 	fasm $< $@
 
 

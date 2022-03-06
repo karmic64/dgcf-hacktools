@@ -1,6 +1,9 @@
 	format binary
 	use32
 	
+	include "imports.inc"
+	
+	
 SRC_EXE equ "DFantasy/dfantasy.exe"
 PE_BASE equ $400000
 
@@ -21,7 +24,7 @@ macro incbin_until addr {
 	dd SECTION_BASE + SECTION_SIZE ;extend image size
 	
 	incbin_until $278
-	db "UPX" ;section name
+	db "dgcf-en" ;section name
 	db (PE_BASE+$280)-$ dup 0
 	dd SECTION_SIZE ;virtual size
 	dd SECTION_BASE ;virtual address
@@ -34,6 +37,10 @@ macro incbin_until addr {
 	dd $e0000060 ;readable, writable, executable, contains code and initialized data
 	
 	
+	incbin_until $300
+	db "(C) 2022 Team Kokonoe Media Industries, LLC."
+	
+	
 	
 	
 	
@@ -44,6 +51,9 @@ macro incbin_until addr {
 virtual_section_base:
 	org SECTION_BASE+PE_BASE
 section_base:
+	
+	db "Don't proceed any further! If you want to hack this translation, use the source tools at <https://github.com/karmic64/dgcf-hacktools> instead of your hex editor."
+	
 		
 	
 	;this is just some junk code to prove the origin is set correctly

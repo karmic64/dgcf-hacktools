@@ -3,5 +3,6 @@ DFantasy
 
 *.d
 *.exe
+dump-imports
 grp
 pak
