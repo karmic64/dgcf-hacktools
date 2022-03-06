@@ -21,11 +21,15 @@ DEPS := $(SRCS:.c=.d)
 .PHONY: default all clean
 
 default: all
-all: $(OUTS)
+all: $(OUTS) dfantasy-en.exe
 
 
 clean:
 	-$(RM) $(OUTS) $(DEPS)
+
+
+dfantasy-en.exe: dfantasy-en.asm DFantasy/dfantasy.exe
+	fasm $< $@
 
 
 
